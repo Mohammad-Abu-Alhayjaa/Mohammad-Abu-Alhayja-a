@@ -460,9 +460,10 @@ section { position: relative; z-index: 1; }
   font-weight: 500;
 }
 
+/* FIX: Replaced 3-stat grid with 2-stat (removed GPA) */
 .card-stats {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: 0.5rem;
 }
 .card-stat {
@@ -554,51 +555,71 @@ section { position: relative; z-index: 1; }
   margin-top: 3rem;
 }
 
-.skill-bar-group { display: flex; flex-direction: column; gap: 1.5rem; }
+/* FIX: Removed percentage bars — replaced with category-based chip groups */
+.skill-categories {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-top: 3rem;
+}
 
-.skill-item {}
-.skill-meta {
+.skill-category {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 1.5rem;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+.skill-category:hover {
+  border-color: rgba(255,255,255,0.14);
+  box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+}
+
+.skill-cat-label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  margin-bottom: 1rem;
   display: flex;
-  justify-content: space-between;
-  margin-bottom: 0.5rem;
+  align-items: center;
+  gap: 0.5rem;
 }
-.skill-name { font-size: 0.88rem; font-weight: 500; color: var(--text); }
-.skill-pct  { display: none; }
-
-.skill-track {
-  height: 6px;
-  background: rgba(255,255,255,0.06);
-  border-radius: 3px;
-  overflow: hidden;
-  position: relative;
-}
-.skill-fill {
-  height: 100%;
-  border-radius: 3px;
-  width: 100% !important;
-  transition: width 1.2s cubic-bezier(0.25, 1, 0.5, 1);
-  position: relative;
-  overflow: hidden;
-}
-.skill-fill::after {
+.skill-cat-label::before {
   content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
-  transform: translateX(-100%);
-  animation: none;
+  display: inline-block;
+  width: 8px; height: 8px;
+  border-radius: 50%;
 }
-.skill-fill.animated::after {
-  animation: shimmer-sweep 1.5s 1.2s ease forwards;
-}
-@keyframes shimmer-sweep {
-  to { transform: translateX(200%); }
-}
+.cat-mobile  .skill-cat-label { color: var(--indigo-light); }
+.cat-mobile  .skill-cat-label::before { background: var(--indigo-light); box-shadow: 0 0 8px var(--indigo-light); }
+.cat-backend .skill-cat-label { color: var(--pink); }
+.cat-backend .skill-cat-label::before { background: var(--pink); box-shadow: 0 0 8px var(--pink); }
+.cat-web     .skill-cat-label { color: var(--cyan); }
+.cat-web     .skill-cat-label::before { background: var(--cyan); box-shadow: 0 0 8px var(--cyan); }
+.cat-tools   .skill-cat-label { color: var(--amber); }
+.cat-tools   .skill-cat-label::before { background: var(--amber); box-shadow: 0 0 8px var(--amber); }
 
-.skill-fill.indigo { background: linear-gradient(90deg, var(--indigo), var(--indigo-light)); }
-.skill-fill.pink   { background: linear-gradient(90deg, var(--pink), #f472b6); }
-.skill-fill.cyan   { background: linear-gradient(90deg, var(--cyan), #67e8f9); }
-.skill-fill.amber  { background: linear-gradient(90deg, var(--amber), #fcd34d); }
+.skill-cat-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+.skill-cat-chip {
+  font-size: 0.76rem;
+  font-weight: 500;
+  padding: 0.3rem 0.75rem;
+  border-radius: 100px;
+  border: 1px solid rgba(255,255,255,0.1);
+  background: rgba(255,255,255,0.04);
+  color: var(--text);
+  transition: transform 0.2s, background 0.2s, border-color 0.2s;
+}
+.skill-cat-chip:hover { transform: translateY(-3px); }
+.cat-mobile  .skill-cat-chip:hover { background: rgba(129,140,248,0.12); border-color: var(--indigo-light); color: var(--indigo-light); }
+.cat-backend .skill-cat-chip:hover { background: rgba(236,72,153,0.1); border-color: var(--pink); color: var(--pink); }
+.cat-web     .skill-cat-chip:hover { background: rgba(6,182,212,0.1); border-color: var(--cyan); color: var(--cyan); }
+.cat-tools   .skill-cat-chip:hover { background: rgba(245,158,11,0.1); border-color: var(--amber); color: var(--amber); }
 
 /* tech chips */
 .chip-cloud {
@@ -761,6 +782,8 @@ section { position: relative; z-index: 1; }
   position: relative;
   overflow: hidden;
   transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s;
+  display: flex;
+  flex-direction: column;
 }
 .proj-card::before {
   content: '';
@@ -786,6 +809,13 @@ section { position: relative; z-index: 1; }
   color: var(--muted);
   line-height: 1.65;
   margin-bottom: 1.25rem;
+  flex: 1;
+}
+.proj-footer {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: auto;
 }
 .proj-tags {
   display: flex;
@@ -800,6 +830,65 @@ section { position: relative; z-index: 1; }
   background: rgba(255,255,255,0.05);
   border: 1px solid rgba(255,255,255,0.1);
   color: var(--muted);
+}
+
+/* Project links */
+.proj-links {
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+.proj-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.76rem;
+  font-weight: 600;
+  padding: 0.35rem 0.9rem;
+  border-radius: 100px;
+  text-decoration: none;
+  transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
+  border: 1px solid;
+}
+.proj-link.github {
+  background: rgba(255,255,255,0.05);
+  border-color: rgba(255,255,255,0.12);
+  color: var(--text);
+}
+.proj-link.github:hover {
+  background: rgba(255,255,255,0.1);
+  border-color: rgba(255,255,255,0.25);
+  transform: translateY(-2px);
+}
+.proj-link svg {
+  width: 13px; height: 13px;
+  fill: currentColor;
+  flex-shrink: 0;
+}
+
+/* FIX: "Other Work" label for Game Hub */
+.proj-card.other-work {
+  opacity: 0.75;
+  border-style: dashed;
+}
+.proj-card.other-work:hover {
+  opacity: 1;
+}
+.proj-other-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.66rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 100px;
+  padding: 0.2rem 0.65rem;
+  margin-bottom: 0.85rem;
+  width: fit-content;
 }
 
 /* ============================================================
@@ -1022,9 +1111,6 @@ footer {
 footer span { color: var(--pink); }
 
 /* ============================================================
-   RESPONSIVE
-   ============================================================ */
-/* ============================================================
    RESPONSIVE — TABLET (≤900px)
    ============================================================ */
 @media (max-width: 900px) {
@@ -1038,6 +1124,7 @@ footer span { color: var(--pink); }
   .contact-visual   { display: none; }
   .card-ring        { width: 260px; height: 260px; }
   .card-ring-2      { width: 300px; height: 300px; }
+  .skill-categories { grid-template-columns: 1fr; }
   section           { padding-left: 1.5rem; padding-right: 1.5rem; }
 }
 
@@ -1045,7 +1132,6 @@ footer span { color: var(--pink); }
    RESPONSIVE — MOBILE (≤600px)
    ============================================================ */
 @media (max-width: 600px) {
-  /* Nav */
   .nav-links { display: none; }
   .nav-links.open {
     display: flex; flex-direction: column;
@@ -1057,7 +1143,6 @@ footer span { color: var(--pink); }
   }
   .nav-hamburger { display: flex; }
 
-  /* Hero */
   .hero-grid { gap: 2rem; }
   .hero-name { letter-spacing: -1px; }
   .hero-cta  { flex-direction: column; align-items: center; }
@@ -1068,29 +1153,23 @@ footer span { color: var(--pink); }
   .card-ring  { width: 230px; height: 230px; }
   .card-ring-2 { width: 265px; height: 265px; }
 
-  /* Sections */
   #hero       { padding: 100px 0 60px; }
   #skills, #experience, #projects, #education, #contact { padding: 70px 0; }
 
-  /* Skills */
   .chip-cloud { gap: 0.4rem; }
   .chip       { font-size: 0.72rem; padding: 0.3rem 0.75rem; }
 
-  /* Projects */
   .projects-grid { grid-template-columns: 1fr; }
+  .skill-categories { grid-template-columns: 1fr; }
 
-  /* Timeline */
   .timeline { padding-left: 1.5rem; }
   .timeline-item::before { left: -1.9rem; }
 
-  /* Education */
   .lang-grid { grid-template-columns: 1fr 1fr; }
 
-  /* Contact */
   .contact-value { font-size: 0.78rem; word-break: break-all; }
   #back-to-top   { bottom: 1.25rem; right: 1.25rem; width: 42px; height: 42px; }
 
-  /* Section titles */
   .section-title { font-size: clamp(1.6rem, 6vw, 2.4rem); }
 }
 
@@ -1099,7 +1178,7 @@ footer span { color: var(--pink); }
    ============================================================ */
 @media (max-width: 380px) {
   .hero-card   { width: 190px; }
-  .card-stats  { grid-template-columns: repeat(3, 1fr); gap: 0.3rem; }
+  .card-stats  { grid-template-columns: repeat(2, 1fr); gap: 0.3rem; }
   .card-stat-num { font-size: 0.9rem; }
   .card-stat-label { font-size: 0.55rem; }
   .container   { padding: 0 1rem; }
@@ -1190,7 +1269,7 @@ footer span { color: var(--pink); }
         <div class="hero-tag"><span class="dot"></span> Open to Opportunities</div>
         <h1 class="hero-name"><span class="name-first">Mohammad</span><br><span class="name-last">Abu-Alhayja'a</span></h1>
         <p class="hero-subtitle">
-          Flutter & Mobile App Developer —<br>
+          Flutter &amp; Mobile App Developer —<br>
           <span>Clean Architecture · Firebase · REST APIs</span>
         </p>
         <div class="hero-cta">
@@ -1199,6 +1278,7 @@ footer span { color: var(--pink); }
         </div>
       </div>
       <!-- RIGHT -->
+      <!-- FIX: Removed GPA stat, kept 2 meaningful stats -->
       <div class="hero-card-wrap">
         <div class="hero-orb"></div>
         <div class="card-ring"></div>
@@ -1213,12 +1293,8 @@ footer span { color: var(--pink); }
               <div class="card-stat-label">Flutter Apps</div>
             </div>
             <div class="card-stat">
-              <div class="card-stat-num">3+</div>
-              <div class="card-stat-label">Projects</div>
-            </div>
-            <div class="card-stat">
-              <div class="card-stat-num">3.0</div>
-              <div class="card-stat-label">GPA / 4.0</div>
+              <div class="card-stat-num">3</div>
+              <div class="card-stat-label">Featured Projects</div>
             </div>
           </div>
         </div>
@@ -1242,6 +1318,7 @@ footer span { color: var(--pink); }
     <span class="marquee-item">Google Maps API <span class="sep"></span></span>
     <span class="marquee-item">Git / GitHub <span class="sep"></span></span>
     <span class="marquee-item">Figma <span class="sep"></span></span>
+    <span class="marquee-item">SQFlite <span class="sep"></span></span>
     <span class="marquee-item">Node.js <span class="sep"></span></span>
     <span class="marquee-item">PHP <span class="sep"></span></span>
     <span class="marquee-item">MVC Architecture <span class="sep"></span></span>
@@ -1258,6 +1335,7 @@ footer span { color: var(--pink); }
     <span class="marquee-item">Google Maps API <span class="sep"></span></span>
     <span class="marquee-item">Git / GitHub <span class="sep"></span></span>
     <span class="marquee-item">Figma <span class="sep"></span></span>
+    <span class="marquee-item">SQFlite <span class="sep"></span></span>
     <span class="marquee-item">Node.js <span class="sep"></span></span>
     <span class="marquee-item">PHP <span class="sep"></span></span>
     <span class="marquee-item">MVC Architecture <span class="sep"></span></span>
@@ -1265,96 +1343,73 @@ footer span { color: var(--pink); }
 </div>
 
 <!-- ============================================================
-     SKILLS SECTION
+     SKILLS SECTION — FIX: category cards instead of % bars
      ============================================================ -->
 <section id="skills">
   <div class="container">
     <p class="section-label reveal">Technical Arsenal</p>
-    <h2 class="section-title reveal"><span class="gradient-text">Skills &</span> Technologies</h2>
+    <h2 class="section-title reveal"><span class="gradient-text">Skills &amp;</span> Technologies</h2>
 
-    <div class="skills-grid">
-      <div class="skill-bar-group reveal from-left">
-        <div class="skill-item" data-pct="95" data-color="indigo">
-          <div class="skill-meta"><span class="skill-name">Flutter & Dart</span><span class="skill-pct">95%</span></div>
-          <div class="skill-track"><div class="skill-fill indigo"></div></div>
-        </div>
-        <div class="skill-item" data-pct="85" data-color="pink">
-          <div class="skill-meta"><span class="skill-name">Firebase (Auth, Firestore, Storage)</span><span class="skill-pct">85%</span></div>
-          <div class="skill-track"><div class="skill-fill pink"></div></div>
-        </div>
-        <div class="skill-item" data-pct="80" data-color="cyan">
-          <div class="skill-meta"><span class="skill-name">REST API Integration</span><span class="skill-pct">80%</span></div>
-          <div class="skill-track"><div class="skill-fill cyan"></div></div>
-        </div>
-        <div class="skill-item" data-pct="80" data-color="indigo">
-          <div class="skill-meta"><span class="skill-name">Provider / GetX State Management</span><span class="skill-pct">80%</span></div>
-          <div class="skill-track"><div class="skill-fill indigo"></div></div>
-        </div>
-        <div class="skill-item" data-pct="75" data-color="amber">
-          <div class="skill-meta"><span class="skill-name">Google Maps API</span><span class="skill-pct">75%</span></div>
-          <div class="skill-track"><div class="skill-fill amber"></div></div>
+    <div class="skill-categories">
+      <div class="skill-category cat-mobile reveal from-left">
+        <div class="skill-cat-label">Mobile Development</div>
+        <div class="skill-cat-chips">
+          <span class="skill-cat-chip">Flutter</span>
+          <span class="skill-cat-chip">Dart</span>
+          <span class="skill-cat-chip">GetX</span>
+          <span class="skill-cat-chip">Provider</span>
+          <span class="skill-cat-chip">Clean Architecture</span>
+          <span class="skill-cat-chip">MVC</span>
+          <span class="skill-cat-chip">Geolocator</span>
+          <span class="skill-cat-chip">Shared Preferences</span>
+          <span class="skill-cat-chip">SQFlite</span>
+          <span class="skill-cat-chip">Localization (intl)</span>
         </div>
       </div>
 
-      <div class="skill-bar-group reveal from-right">
-        <div class="skill-item" data-pct="80" data-color="cyan">
-          <div class="skill-meta"><span class="skill-name">React.js / JavaScript</span><span class="skill-pct">80%</span></div>
-          <div class="skill-track"><div class="skill-fill cyan"></div></div>
-        </div>
-        <div class="skill-item" data-pct="75" data-color="pink">
-          <div class="skill-meta"><span class="skill-name">Supabase (Auth, DB, Storage)</span><span class="skill-pct">75%</span></div>
-          <div class="skill-track"><div class="skill-fill pink"></div></div>
-        </div>
-        <div class="skill-item" data-pct="85" data-color="indigo">
-          <div class="skill-meta"><span class="skill-name">Clean Architecture / MVC</span><span class="skill-pct">85%</span></div>
-          <div class="skill-track"><div class="skill-fill indigo"></div></div>
-        </div>
-        <div class="skill-item" data-pct="80" data-color="amber">
-          <div class="skill-meta"><span class="skill-name">Git & GitHub</span><span class="skill-pct">80%</span></div>
-          <div class="skill-track"><div class="skill-fill amber"></div></div>
-        </div>
-        <div class="skill-item" data-pct="70" data-color="cyan">
-          <div class="skill-meta"><span class="skill-name">Figma (UI/UX Design)</span><span class="skill-pct">70%</span></div>
-          <div class="skill-track"><div class="skill-fill cyan"></div></div>
+      <div class="skill-category cat-backend reveal from-right">
+        <div class="skill-cat-label">Backend &amp; Services</div>
+        <div class="skill-cat-chips">
+          <span class="skill-cat-chip">Firebase Auth</span>
+          <span class="skill-cat-chip">Firestore</span>
+          <span class="skill-cat-chip">Firebase Storage</span>
+          <span class="skill-cat-chip">Supabase</span>
+          <span class="skill-cat-chip">REST APIs</span>
+          <span class="skill-cat-chip">Google Maps API</span>
+          <span class="skill-cat-chip">Node.js</span>
+          <span class="skill-cat-chip">PHP</span>
         </div>
       </div>
-    </div>
 
-    <!-- Chip Cloud -->
-    <div class="chip-cloud reveal">
-      <span class="chip">Dart</span>
-      <span class="chip">Flutter</span>
-      <span class="chip">Java</span>
-      <span class="chip">JavaScript</span>
-      <span class="chip">PHP</span>
-      <span class="chip">HTML / CSS</span>
-      <span class="chip">React.js</span>
-      <span class="chip">Node.js</span>
-      <span class="chip">Firebase Auth</span>
-      <span class="chip">Firestore</span>
-      <span class="chip">Firebase Storage</span>
-      <span class="chip">Supabase</span>
-      <span class="chip">REST APIs</span>
-      <span class="chip">Google Maps API</span>
-      <span class="chip">Provider</span>
-      <span class="chip">GetX</span>
-      <span class="chip">Geolocator</span>
-      <span class="chip">Shared Preferences</span>
-      <span class="chip">Clean Architecture</span>
-      <span class="chip">MVC</span>
-      <span class="chip">OOP</span>
-      <span class="chip">Data Structures</span>
-      <span class="chip">Git / GitHub</span>
-      <span class="chip">Figma</span>
-      <span class="chip">VS Code</span>
-      <span class="chip">Arduino</span>
-      <span class="chip">UI/UX Principles</span>
+      <div class="skill-category cat-web reveal from-left">
+        <div class="skill-cat-label">Web &amp; UI</div>
+        <div class="skill-cat-chips">
+          <span class="skill-cat-chip">React.js</span>
+          <span class="skill-cat-chip">JavaScript</span>
+          <span class="skill-cat-chip">HTML / CSS</span>
+          <span class="skill-cat-chip">Figma</span>
+          <span class="skill-cat-chip">UI/UX Principles</span>
+          <span class="skill-cat-chip">Responsive Design</span>
+        </div>
+      </div>
+
+      <div class="skill-category cat-tools reveal from-right">
+        <div class="skill-cat-label">Tools &amp; Languages</div>
+        <div class="skill-cat-chips">
+          <span class="skill-cat-chip">Git / GitHub</span>
+          <span class="skill-cat-chip">VS Code</span>
+          <span class="skill-cat-chip">Java</span>
+          <span class="skill-cat-chip">OOP</span>
+          <span class="skill-cat-chip">Data Structures</span>
+          <span class="skill-cat-chip">Arduino</span>
+        </div>
+      </div>
     </div>
   </div>
 </section>
 
 <!-- ============================================================
-     EXPERIENCE SECTION
+     EXPERIENCE SECTION — FIX: corrected dates Jul 2025 – Nov 2025
      ============================================================ -->
 <section id="experience">
   <div class="container">
@@ -1368,7 +1423,7 @@ footer span { color: var(--pink); }
             <div class="exp-title">Flutter Mobile Application Development Trainee</div>
             <div class="exp-date">Jul 2025 – Nov 2025</div>
           </div>
-          <div class="exp-company">DigiSkills & Ministry of Digital Economy · Luminus Technical University College · Amman, Jordan</div>
+          <div class="exp-company">DigiSkills &amp; Ministry of Digital Economy · Luminus Technical University College · Amman, Jordan</div>
           <div class="exp-desc">
             Completed an intensive training program focused on Flutter and Dart for production-level mobile app development.
             Built 15+ Flutter applications using Firebase, state management (GetX), and modern UI/UX principles.
@@ -1392,6 +1447,8 @@ footer span { color: var(--pink); }
 
 <!-- ============================================================
      PROJECTS SECTION
+     FIX: PetJo (no link, private), QuickShop (GitHub link),
+          Game Hub replaced by IdeaVault (GitHub link)
      ============================================================ -->
 <section id="projects">
   <div class="container">
@@ -1400,6 +1457,7 @@ footer span { color: var(--pink); }
 
     <div class="projects-grid">
 
+      <!-- PetJo — private repo, no link shown -->
       <div class="proj-card reveal">
         <span class="proj-emoji">🐾</span>
         <div class="proj-name">PetJo — Pet Adoption App</div>
@@ -1409,19 +1467,22 @@ footer span { color: var(--pink); }
           Displays pet locations via Google Maps and enables WhatsApp-based adoption contact.
           Designed fully in Figma before implementation.
         </div>
-        <div class="proj-tags">
-          <span class="proj-tag">Flutter</span>
-          <span class="proj-tag">Dart</span>
-          <span class="proj-tag">Supabase</span>
-          <span class="proj-tag">Firebase</span>
-          <span class="proj-tag">Google Maps API</span>
-          <span class="proj-tag">Geolocator</span>
-          <span class="proj-tag">Provider</span>
-          <span class="proj-tag">MVC</span>
-          <span class="proj-tag">Figma</span>
+        <div class="proj-footer">
+          <div class="proj-tags">
+            <span class="proj-tag">Flutter</span>
+            <span class="proj-tag">Dart</span>
+            <span class="proj-tag">Supabase</span>
+            <span class="proj-tag">Firebase</span>
+            <span class="proj-tag">Google Maps API</span>
+            <span class="proj-tag">Geolocator</span>
+            <span class="proj-tag">Provider</span>
+            <span class="proj-tag">MVC</span>
+            <span class="proj-tag">Figma</span>
+          </div>
         </div>
       </div>
 
+      <!-- QuickShop — public repo -->
       <div class="proj-card reveal">
         <span class="proj-emoji">🛒</span>
         <div class="proj-name">QuickShop — E-Commerce App</div>
@@ -1430,33 +1491,48 @@ footer span { color: var(--pink); }
           Integrated DummyJSON REST API for dynamic product retrieval and Firebase Auth / Firestore for user data.
           Features multi-language localization, persistent preferences with Shared Preferences, and seamless UX.
         </div>
-        <div class="proj-tags">
-          <span class="proj-tag">Flutter</span>
-          <span class="proj-tag">Dart</span>
-          <span class="proj-tag">Provider</span>
-          <span class="proj-tag">REST API</span>
-          <span class="proj-tag">Firebase Auth</span>
-          <span class="proj-tag">Firestore</span>
-          <span class="proj-tag">Localization</span>
-          <span class="proj-tag">Shared Prefs</span>
-          <span class="proj-tag">MVC</span>
+        <div class="proj-footer">
+          <div class="proj-tags">
+            <span class="proj-tag">Flutter</span>
+            <span class="proj-tag">Dart</span>
+            <span class="proj-tag">Provider</span>
+            <span class="proj-tag">REST API</span>
+            <span class="proj-tag">Firebase Auth</span>
+            <span class="proj-tag">Firestore</span>
+            <span class="proj-tag">Localization</span>
+            <span class="proj-tag">Shared Prefs</span>
+            <span class="proj-tag">MVC</span>
+          </div>
+          <div class="proj-links">
+            <a href="https://github.com/Flutter-Project-by-Mohammad-Abu-Alhijaa/QuickShop" target="_blank" class="proj-link github">
+              <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>
+              GitHub
+            </a>
+          </div>
         </div>
       </div>
 
+      <!-- IdeaVault — replaces Game Hub -->
       <div class="proj-card reveal">
-        <span class="proj-emoji">🎮</span>
-        <div class="proj-name">Game Hub — React Web App</div>
+        <span class="proj-emoji">💡</span>
+        <div class="proj-name">IdeaVault — Note-Taking App</div>
         <div class="proj-desc">
-          A responsive React.js website showcasing gaming news and favorites, built in a collaborative team project.
-          Implemented reusable modular components, client-side routing for efficient navigation, and clean code principles
-          ensuring scalability, maintainability, and consistent UI across all pages.
+          A lightweight, fully localized note-taking app built with Flutter. Supports creating, managing, and deleting notes with local persistence via SQFlite. Features multi-language support with full internationalization (intl) and a clean MVC architecture for scalability.
         </div>
-        <div class="proj-tags">
-          <span class="proj-tag">React.js</span>
-          <span class="proj-tag">JavaScript</span>
-          <span class="proj-tag">HTML</span>
-          <span class="proj-tag">CSS</span>
-          <span class="proj-tag">GitHub</span>
+        <div class="proj-footer">
+          <div class="proj-tags">
+            <span class="proj-tag">Flutter</span>
+            <span class="proj-tag">Dart</span>
+            <span class="proj-tag">SQFlite</span>
+            <span class="proj-tag">Localization (intl)</span>
+            <span class="proj-tag">MVC</span>
+          </div>
+          <div class="proj-links">
+            <a href="https://github.com/Flutter-Project-by-Mohammad-Abu-Alhijaa/IdeaVault" target="_blank" class="proj-link github">
+              <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>
+              GitHub
+            </a>
+          </div>
         </div>
       </div>
 
@@ -1470,7 +1546,7 @@ footer span { color: var(--pink); }
 <section id="education">
   <div class="container">
     <p class="section-label reveal">Background</p>
-    <h2 class="section-title reveal"><span class="gradient-text">Education &</span> Certifications</h2>
+    <h2 class="section-title reveal"><span class="gradient-text">Education &amp;</span> Certifications</h2>
 
     <div class="edu-lang-grid">
       <!-- LEFT: Education + Lang -->
@@ -1500,7 +1576,7 @@ footer span { color: var(--pink); }
 
       <!-- RIGHT: Certifications -->
       <div class="reveal from-right">
-        <p class="section-label" style="margin-bottom:1.25rem">Certifications & Courses</p>
+        <p class="section-label" style="margin-bottom:1.25rem">Certifications &amp; Courses</p>
         <div class="cert-list">
           <div class="cert-item">
             <div class="cert-dot" style="background:var(--cyan);box-shadow:0 0 8px var(--cyan)"></div>
@@ -1512,14 +1588,14 @@ footer span { color: var(--pink); }
           <div class="cert-item">
             <div class="cert-dot" style="background:var(--pink);box-shadow:0 0 8px var(--pink)"></div>
             <div>
-              <div class="cert-name">Front-End Development with React.js & JavaScript</div>
+              <div class="cert-name">Front-End Development with React.js &amp; JavaScript</div>
               <div class="cert-org">Luminus Technical University College · Sep–Oct 2023</div>
             </div>
           </div>
           <div class="cert-item">
             <div class="cert-dot" style="background:var(--amber);box-shadow:0 0 8px var(--amber)"></div>
             <div>
-              <div class="cert-name">Cyber Warriors — CTF & Cybersecurity Training</div>
+              <div class="cert-name">Cyber Warriors — CTF &amp; Cybersecurity Training</div>
               <div class="cert-org">National Cyber Security Center of Jordan · June 2024 · 40 Hours</div>
             </div>
           </div>
@@ -1593,7 +1669,7 @@ footer span { color: var(--pink); }
           <div class="contact-icon i-pink">✅</div>
           <div class="contact-meta">
             <div class="contact-label">Availability</div>
-            <div class="contact-value">Open to Remote & Internship Roles</div>
+            <div class="contact-value">Open to Remote &amp; Internship Roles</div>
           </div>
         </div>
       </div>
@@ -1616,7 +1692,7 @@ footer span { color: var(--pink); }
 
 <!-- FOOTER -->
 <footer>
-  <p>Designed & Built by <span>Mohammad Abu-Alhayja'a</span> · Amman, Jordan · 2025</p>
+  <p>Designed &amp; Built by <span>Mohammad Abu-Alhayja'a</span> · Amman, Jordan · 2025</p>
 </footer>
 
 <!-- ============================================================
@@ -1727,21 +1803,6 @@ const revealObs = new IntersectionObserver((entries) => {
 }, { threshold: 0.12 });
 
 document.querySelectorAll('.reveal').forEach(el => revealObs.observe(el));
-
-/* ---- SKILL BARS ---- */
-const skillObs = new IntersectionObserver((entries) => {
-  entries.forEach(e => {
-    if (!e.isIntersecting) return;
-    const item  = e.target;
-    const pct   = item.dataset.pct;
-    const fill  = item.querySelector('.skill-fill');
-    fill.style.width = pct + '%';
-    fill.classList.add('animated');
-    skillObs.unobserve(item);
-  });
-}, { threshold: 0.3 });
-
-document.querySelectorAll('.skill-item').forEach(el => skillObs.observe(el));
 
 /* ---- NAV HAMBURGER ---- */
 function toggleNav() {
